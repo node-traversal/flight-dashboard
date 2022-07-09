@@ -8,12 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let tabPadding = 20.0
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        TabView {
+            HomeView().padding(.bottom, tabPadding)
+                .tabItem { Label("Home", systemImage: "homekit") }
+            
+            AirportDelaysView()
+            .padding(.bottom, tabPadding)
+            .tabItem { Label("Delays", systemImage: "cloud.rain") }
+            
+            SettingsView().padding(.bottom, tabPadding)
+            .tabItem { Label("Settings", systemImage: "gearshape") }
         }
     }
 }

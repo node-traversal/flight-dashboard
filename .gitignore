@@ -4,3 +4,6 @@
 /*.xcodeproj
 xcuserdata/
 .idea/
+
+# secrets
+Environment.xcconfig
