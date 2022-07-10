@@ -48,8 +48,7 @@ struct DepartingFlightView: View {
                 Text(flight.origin.location.uppercased()).bold()
                 if flight.gateDeparts != nil {
                     Text(flight.gateDepartsText)
-                }
-                
+                }                
                 Text(flight.departs.date().day(flight.origin.timeZone))
                 HStack {
                     Text(flight.departs.date().time(flight.origin.timeZone).uppercased()).bold()

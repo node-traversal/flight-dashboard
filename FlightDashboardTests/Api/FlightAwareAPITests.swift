@@ -33,11 +33,7 @@ final class FlightAwareAPITests: XCTestCase {
         
         return (api: FlightAwareAPI(requestProvider: requestFactory), factory: requestFactory)
     }
-    
-    private func ids<T>(_ values: [T]) -> [String] where T: Identifiable {
-        return values.map { return $0.id as? String ?? UUID().uuidString }
-    }
-    
+       
     func testRequest() throws {
         let requestFactory = try FlightAwareRequestFactory().request(method: .get, uri: "airports")
         XCTAssertEqual(requestFactory.url?.absoluteString ?? "fail", "https://aeroapi.flightaware.com/aeroapi/airports")
@@ -86,6 +82,15 @@ final class FlightAwareAPITests: XCTestCase {
         let flights = try await test.api.getScheduledDepartures(airport: "ABC")
         XCTAssertEqual(ids(flights), ids(flights))
         XCTAssertEqual(test.factory.uri, "/airports/ABC/flights/scheduled_departures?airline=SWA")
+        XCTAssertEqual(test.factory.method, .get)
+    }
+    
+    func testAirportDelays() async throws {
+        let test = try testCase(FlightAwareAPI.AirportDelaysData(delays: ExampleDelays.delays))
+        
+        let values = try await test.api.getAirportDelays()
+        XCTAssertEqual(ids(values), ids(ExampleDelays.delays))
+        XCTAssertEqual(test.factory.uri, "/airports/delays")
         XCTAssertEqual(test.factory.method, .get)
     }
 }

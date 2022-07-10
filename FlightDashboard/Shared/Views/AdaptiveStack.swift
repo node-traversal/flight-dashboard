@@ -34,8 +34,8 @@ struct AdaptiveStack<Content: View>: View {
 struct AdaptiveStack_Previews: PreviewProvider {
     static var previews: some View {
         AdaptiveStack {
-            Text("A")
-            Text("B")
+            Text("A").padding(.all, 60).background(.pink)
+            Text("B").padding(.all, 60).background(.purple)
         }
     }
 }

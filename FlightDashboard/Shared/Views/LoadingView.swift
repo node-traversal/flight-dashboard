@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoadingView<Content: View>: View {
     var loading: Binding<LoadingState>
+    var showList: Bool = true
     var onLoad: () async -> Void = {}
     var content: () -> Content
     
@@ -28,7 +29,17 @@ struct LoadingView<Content: View>: View {
             case .loading:
                 ProgressView()
             case .loaded:
-                content()
+                if showList {
+                    List {
+                        content()
+                    }.refreshable {
+                        Task {
+                            await onLoad()
+                        }
+                    }
+                } else {
+                    content()
+                }                
             case .error:
                 Text("Error!").foregroundColor(.red)
             }

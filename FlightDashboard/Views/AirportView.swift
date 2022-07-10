@@ -9,8 +9,8 @@ import SwiftUI
 
 class AirportViewModel: LoadableViewModel {
     enum SearchType: String, CaseIterable {
-        case scheduled = "Departing"
-        case inflight = "Departed"
+        case departing = "Departing"
+        case departed = "Departed"
         case arriving = "Arriving"
         case arrived = "Arrived"
     }
@@ -26,7 +26,7 @@ class AirportViewModel: LoadableViewModel {
         self.flights = flights
         self.api = api
         self.airport = airport
-        self.mode = .inflight
+        self.mode = .departing
         super.init(state: state)
     }
     
@@ -39,9 +39,9 @@ class AirportViewModel: LoadableViewModel {
         
     private func getResults() async throws -> [Flight] {
         switch self.mode {
-        case .scheduled:
+        case .departing:
             return try await api.getScheduledDepartures(airport: airport)
-        case .inflight:
+        case .departed:
             return try await api.getDepartures(airport: airport)
         case .arriving:
             return try await api.getScheduledArrivals(airport: airport)
@@ -56,36 +56,29 @@ struct AirportView: View {
     
     var body: some View {
         NavigationView {
-            LoadingView(loading: $viewModel.state, onLoad: viewModel.load) {
-                VStack {
-                    Picker("Select a search mode", selection: $viewModel.mode) {
-                        ForEach(AirportViewModel.SearchType.allCases, id: \.self) {
-                            Text($0.rawValue)
-                        }
-                    }.pickerStyle(.segmented).onChange(of: viewModel.mode) { _ in
-                        print("mode changed \(viewModel.mode)")
-                        Task {
-                            await viewModel.load()
-                        }
+            VStack {
+                Picker("Select a search mode", selection: $viewModel.mode) {
+                    ForEach(AirportViewModel.SearchType.allCases, id: \.self) {
+                        Text($0.rawValue)
                     }
-                    List {
-                        Section(header: Text("Flights")) {
-                            ForEach(viewModel.flights, id: \.id) { flight in
-                                HStack {
-                                    NavigationLink(destination: FlightDetailView(viewModel: FlightDetailViewModel(flight: flight)).navigationTitle("Flight Detail: \(flight.flightNumber)")) {
-                                        Text(flight.destination.code).bold()
-                                        Text("|  Flight: \(flight.flightNumber) \(flight.status)")
-                                    }
+                }.pickerStyle(.segmented).onChange(of: viewModel.mode) { _ in
+                    Task {
+                        await viewModel.load()
+                    }
+                }.disabled(viewModel.state != .loaded)
+                LoadingView(loading: $viewModel.state, onLoad: viewModel.load) {
+                    Section(header: Text("Flights")) {
+                        ForEach(viewModel.flights, id: \.id) { flight in
+                            HStack {
+                                NavigationLink(destination: FlightDetailView(viewModel: FlightDetailViewModel(flight: flight)).navigationTitle("Flight Detail: \(flight.flightNumber)")) {
+                                    Text(flight.destination.code).bold()
+                                    Text("|  Flight: \(flight.flightNumber) \(flight.status)")
                                 }
                             }
                         }
                     }
-                    .refreshable {
-                        Task {
-                            await viewModel.load()
-                        }
-                    }
                 }
+                Spacer()
             }
         }
     }

@@ -77,6 +77,10 @@ class FlightAwareAPI {
     struct FlightsData: Codable {
         let flights: [Flight]
     }
+    
+    struct AirportDelaysData: Codable {
+        let delays: [AirportDelay]
+    }
      
     func getDepartures(airport: String) async throws -> [Flight] {
         return try await provider.request(AirportDeparturesData.self, method: .get,
@@ -96,5 +100,10 @@ class FlightAwareAPI {
     func getScheduledArrivals(airport: String) async throws -> [Flight] {
         return try await provider.request(AirportScheduledArrivalsData.self, method: .get,
                                           uri: "/airports/\(airport)/flights/scheduled_arrivals?airline=SWA").flights
+    }
+    
+    func getAirportDelays() async throws -> [AirportDelay] {
+        return try await provider.request(AirportDelaysData.self, method: .get,
+                                          uri: "/airports/delays").delays
     }
 }
