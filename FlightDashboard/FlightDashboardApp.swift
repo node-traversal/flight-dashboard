@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct FlightDashboardApp: App {
+    init() {
+        let env = EnvironmentFlags()
+        FlightAwareAPIManager.configure(live: env.liveApi ?? false)
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

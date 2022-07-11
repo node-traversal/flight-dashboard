@@ -35,6 +35,23 @@ class FlightAwareRequestFactory: UrlRequestProvider {
     }
 }
 
+class FlightAwareAPIManager {
+    private static var live = false
+    
+    static func configure(live: Bool) {
+        print("configuring flight-aware api live: \(live)")
+        self.live = live
+    }
+    
+    static func get() -> FlightAwareAPI {
+        if !live {
+            return ExamplesFlightAwareAPI()
+        }
+        
+        return FlightAwareAPI()
+    }
+}
+
 class FlightAwareAPI {
     private let provider: UrlRequestProvider
 

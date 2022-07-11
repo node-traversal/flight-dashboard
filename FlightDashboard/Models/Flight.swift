@@ -64,4 +64,32 @@ struct Flight: Codable, Identifiable {
         
         return ""
     }
+    
+    func toTrip() -> Trip { Trip(flightNumber: id, origin: origin.code, destination: destination.code) }
+}
+
+struct Trip: Identifiable, Codable {
+    enum TripType: String, Codable {
+        case flight
+        case destination
+    }
+    
+    init(origin: String, destination: String) {
+        self.type = .destination
+        self.origin = origin
+        self.destination = destination
+        self.id = "\(origin)-\(destination)"
+    }
+    
+    init(flightNumber: String, origin: String, destination: String) {
+        self.type = .flight
+        self.origin = origin
+        self.destination = destination
+        self.id = flightNumber
+    }
+    
+    var id: String
+    let type: TripType
+    let origin: String?
+    let destination: String?
 }

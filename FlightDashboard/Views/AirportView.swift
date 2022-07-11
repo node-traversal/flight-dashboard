@@ -17,27 +17,46 @@ class AirportViewModel: LoadableViewModel {
 
     @Published var mode: AirportViewModel.SearchType
     @Published var flights: [Flight]
-        
+    @Published var favFlights: [Flight]
+    
     let airport: String
     
-    private let api: FlightAwareAPI
-        
-    init(state: LoadingState = LoadingState.idle, airport: String = "KDAL", flights: [Flight] = [Flight](), api: FlightAwareAPI = FlightAwareAPI()) {
+    private var fav: Trip?
+    
+    init(state: LoadingState = LoadingState.idle, airport: String = "KDAL", flights: [Flight] = [Flight]()) {
         self.flights = flights
-        self.api = api
+        self.favFlights = []
         self.airport = airport
         self.mode = .departing
         super.init(state: state)
+        
+        self.fav = favs().trip
     }
+    
+    // MARK: - public methods
     
     func load() async {
         await _withLoadingState {
             let flights = try await getResults()
-            self.flights = flights.filter { !$0.cancelled }.sorted { $0.departs.date() < $1.departs.date() }
+            updateFlights(flights)
         }
     }
         
+    func fav(_ flight: Flight) {
+        let trip = flight.toTrip()
+        self.fav = trip
+        favs().trip = trip
+
+        updateFlights(self.flights + self.favFlights)
+    }
+    
+    // MARK: - private methods
+        
+    private func api() -> FlightAwareAPI { FlightAwareAPIManager.get() }
+    private func favs() -> Favorites { Favorites() }
+        
     private func getResults() async throws -> [Flight] {
+        let api = api()
         switch self.mode {
         case .departing:
             return try await api.getScheduledDepartures(airport: airport)
@@ -48,6 +67,15 @@ class AirportViewModel: LoadableViewModel {
         case .arrived:
             return try await api.getArrivals(airport: airport)
         }
+    }
+    
+    private func updateFlights(_ flights: [Flight]) {
+        self.flights = flights.filter { !$0.cancelled && !self.isFav($0) }.sorted { $0.departs.date() < $1.departs.date() }
+        self.favFlights = flights.filter { self.isFav($0) }.sorted { $0.destination.code < $1.destination.code }
+    }
+    
+    private func isFav(_ flight: Flight) -> Bool {
+        return flight.id == self.fav?.id
     }
 }
 
@@ -66,15 +94,46 @@ struct AirportView: View {
                         await viewModel.load()
                     }
                 }.disabled(viewModel.state != .loaded)
-                LoadingView(loading: $viewModel.state, onLoad: viewModel.load) {
-                    Section(header: Text("Flights")) {
-                        ForEach(viewModel.flights, id: \.id) { flight in
-                            HStack {
-                                NavigationLink(destination: FlightDetailView(viewModel: FlightDetailViewModel(flight: flight)).navigationTitle("Flight Detail: \(flight.flightNumber)")) {
-                                    Text(flight.destination.code).bold()
-                                    Text("|  Flight: \(flight.flightNumber) \(flight.status)")
+                LoadingView(loading: $viewModel.state, showList: false, onLoad: viewModel.load) {
+                    List {
+                        if !viewModel.favFlights.isEmpty {
+                            Section(header: Text("Favorites")) {
+                                ForEach(viewModel.favFlights, id: \.id) { flight in
+                                    HStack {
+                                        NavigationLink(destination: FlightDetailView(viewModel: FlightDetailViewModel(flight: flight)).navigationTitle("Flight Detail: \(flight.flightNumber)")) {
+                                            Text(flight.destination.code).bold()
+                                            Text("|  Flight: \(flight.flightNumber) \(flight.status)")
+                                        }
+                                    }
                                 }
                             }
+                        }
+                        Section(header: Text("Flights")) {
+                            ForEach(viewModel.flights, id: \.id) { flight in
+                                HStack {
+                                    NavigationLink(destination: FlightDetailView(viewModel: FlightDetailViewModel(flight: flight)).navigationTitle("Flight Detail: \(flight.flightNumber)")) {
+                                        Text(flight.destination.code).bold()
+                                        Text("|  Flight: \(flight.flightNumber) \(flight.status)")
+                                    }
+                                }.swipeActions(edge: .leading) {
+                                    Button {
+                                        withAnimation {
+                                            viewModel.fav(flight)
+                                        }
+                                    } label: {
+                                        Label {
+                                            Text("Favorite", comment: "Favorite this flight number")
+                                        } icon: {
+                                            Image(systemName: "heart")
+                                        }
+                                    }
+                                    .tint(.red)
+                                }
+                            }
+                        }
+                    }.refreshable {
+                        Task {
+                            await viewModel.load()
                         }
                     }
                 }

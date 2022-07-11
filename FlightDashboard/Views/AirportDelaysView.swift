@@ -9,18 +9,17 @@ import SwiftUI
 
 class AirportDeplaysViewModel: LoadableViewModel {
     @Published private(set) var airportDelays: [AirportDelay]
-
-    private let api: FlightAwareAPI
-    
-    init(state: LoadingState = .idle, api: FlightAwareAPI = FlightAwareAPI(), delays: [AirportDelay] = []) {
-        self.api = api
+        
+    init(state: LoadingState = .idle, delays: [AirportDelay] = []) {
         self.airportDelays = delays
         super.init(state: state)
     }
     
+    // MARK: - public methods
+    
     func load() async {
         await _withLoadingState {
-            let delays = try await api.getAirportDelays()
+            let delays = try await api().getAirportDelays()
             self.airportDelays = delays.filter { $0.isDomestic }
         }
     }
@@ -36,6 +35,10 @@ class AirportDeplaysViewModel: LoadableViewModel {
             return Color.white
         }
     }
+    
+    // MARK: - private methods
+    
+    private func api() -> FlightAwareAPI { FlightAwareAPIManager.get() }
 }
 
 struct AirportDelaysView: View {

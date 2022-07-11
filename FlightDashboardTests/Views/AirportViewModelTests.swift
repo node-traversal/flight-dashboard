@@ -9,16 +9,21 @@ import XCTest
 @testable import FlightDashboard
 
 final class AirportViewModelTests: XCTestCase {
+    override class func setUp() {
+        super.setUp()
+        FlightAwareAPIManager.configure(live: false)
+    }
+    
     @MainActor
     func testDefaultLoad() async throws {
-        let viewModel = AirportViewModel(state: .loaded, api: ExamplesFlightAwareAPI())
+        let viewModel = AirportViewModel()
         await viewModel.load()
         XCTAssertEqual(ids(viewModel.flights), ids([ExampleFlights.scheduled]))
     }
     
     @MainActor
     func testDepartingLoad() async throws {
-        let viewModel = AirportViewModel(state: .loaded, api: ExamplesFlightAwareAPI())
+        let viewModel = AirportViewModel()
         viewModel.mode = .departing
         await viewModel.load()
         XCTAssertEqual(ids(viewModel.flights), ids([ExampleFlights.scheduled]))
@@ -26,7 +31,7 @@ final class AirportViewModelTests: XCTestCase {
         
     @MainActor
     func testDepartedLoad() async throws {
-        let viewModel = AirportViewModel(state: .loaded, api: ExamplesFlightAwareAPI())
+        let viewModel = AirportViewModel()
         viewModel.mode = .departed
         await viewModel.load()
         XCTAssertEqual(ids(viewModel.flights), ids([ExampleFlights.inflight]))
@@ -34,7 +39,7 @@ final class AirportViewModelTests: XCTestCase {
     
     @MainActor
     func testArrivingLoad() async throws {
-        let viewModel = AirportViewModel(state: .loaded, api: ExamplesFlightAwareAPI())
+        let viewModel = AirportViewModel()
         viewModel.mode = .arriving
         await viewModel.load()
         XCTAssertEqual(ids(viewModel.flights), ids([ExampleFlights.inflight]))
@@ -42,7 +47,7 @@ final class AirportViewModelTests: XCTestCase {
     
     @MainActor
     func testArrivedLoad() async throws {
-        let viewModel = AirportViewModel(state: .loaded, api: ExamplesFlightAwareAPI())
+        let viewModel = AirportViewModel()
         viewModel.mode = .arrived
         await viewModel.load()
         XCTAssertEqual(ids(viewModel.flights), ids([ExampleFlights.landed, ExampleFlights.inflight]))
