@@ -12,6 +12,8 @@ final class AirportViewModelTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         FlightAwareAPIManager.configure(live: false)
+        UserDefaultsManager.configure(storage: false)
+        Favorites().trip = nil
     }
     
     @MainActor

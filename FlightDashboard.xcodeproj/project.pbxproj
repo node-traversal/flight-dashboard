@@ -36,6 +36,12 @@
 		497C5B86287A535C009C2853 /* Date+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C5B82287A52C1009C2853 /* Date+Operators.swift */; };
 		497C5B88287A5E9F009C2853 /* AdaptiveStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 497C5B87287A5E9F009C2853 /* AdaptiveStack.swift */; };
 		49870BD6287C514F0040F968 /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BD5287C514F0040F968 /* PreferencesTests.swift */; };
+		49870BD8287C57C60040F968 /* ValidatedField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BD7287C57C60040F968 /* ValidatedField.swift */; };
+		49870BDA287C57FF0040F968 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BD9287C57FF0040F968 /* Validator.swift */; };
+		49870BDC287C59320040F968 /* ValidatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BDB287C59320040F968 /* ValidatorTest.swift */; };
+		49870BDE287C5A070040F968 /* ValidatedFieldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BDD287C5A070040F968 /* ValidatedFieldTests.swift */; };
+		49870BE0287C5C920040F968 /* TripSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BDF287C5C920040F968 /* TripSearchView.swift */; };
+		49870BE2287C5CED0040F968 /* TripSearchViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BE1287C5CED0040F968 /* TripSearchViewTests.swift */; };
 		499258CB287AEB3A005080C6 /* Data+JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258CA287AEB3A005080C6 /* Data+JsonTests.swift */; };
 		499258CD287AEF2C005080C6 /* TimeInterval+UnitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258CC287AEF2C005080C6 /* TimeInterval+UnitsTests.swift */; };
 		499258D1287AF3CB005080C6 /* LoadableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258D0287AF3CB005080C6 /* LoadableViewModelTests.swift */; };
@@ -104,6 +110,12 @@
 		497C5B84287A5309009C2853 /* TimeInterval+Units.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Units.swift"; sourceTree = "<group>"; };
 		497C5B87287A5E9F009C2853 /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
 		49870BD5287C514F0040F968 /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
+		49870BD7287C57C60040F968 /* ValidatedField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedField.swift; sourceTree = "<group>"; };
+		49870BD9287C57FF0040F968 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
+		49870BDB287C59320040F968 /* ValidatorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorTest.swift; sourceTree = "<group>"; };
+		49870BDD287C5A070040F968 /* ValidatedFieldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldTests.swift; sourceTree = "<group>"; };
+		49870BDF287C5C920040F968 /* TripSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSearchView.swift; sourceTree = "<group>"; };
+		49870BE1287C5CED0040F968 /* TripSearchViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSearchViewTests.swift; sourceTree = "<group>"; };
 		499258CA287AEB3A005080C6 /* Data+JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+JsonTests.swift"; sourceTree = "<group>"; };
 		499258CC287AEF2C005080C6 /* TimeInterval+UnitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+UnitsTests.swift"; sourceTree = "<group>"; };
 		499258D0287AF3CB005080C6 /* LoadableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableViewModelTests.swift; sourceTree = "<group>"; };
@@ -167,6 +179,7 @@
 				497C5B43287A2BB3009C2853 /* SettingsView.swift */,
 				497C5B60287A331A009C2853 /* FlightDetailView.swift */,
 				497C5B80287A522E009C2853 /* FlightViews.swift */,
+				49870BDF287C5C920040F968 /* TripSearchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -216,6 +229,7 @@
 				49ACC4A1287B4EE200DB1CC7 /* UserDefaulted.swift */,
 				49ACC4A3287B4F2700DB1CC7 /* UserDefaultsManager.swift */,
 				49ACC4A5287B4FBD00DB1CC7 /* Preferences.swift */,
+				49870BD9287C57FF0040F968 /* Validator.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -225,6 +239,7 @@
 			children = (
 				497C5B5E287A32CA009C2853 /* LoadingView.swift */,
 				497C5B87287A5E9F009C2853 /* AdaptiveStack.swift */,
+				49870BD7287C57C60040F968 /* ValidatedField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -246,13 +261,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		497C5B77287A3F9B009C2853 /* Core */ = {
+		497C5B77287A3F9B009C2853 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
 				49ACC49F287B4C4C00DB1CC7 /* AdaptiveStackTests.swift */,
 				497C5B78287A3FBC009C2853 /* LoadingViewTests.swift */,
+				49870BDD287C5A070040F968 /* ValidatedFieldTests.swift */,
 			);
-			path = Core;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		497C5B7C287A41D6009C2853 /* Extensions */ = {
@@ -272,6 +288,7 @@
 			children = (
 				499258CF287AF3BB005080C6 /* ViewModels */,
 				49870BD5287C514F0040F968 /* PreferencesTests.swift */,
+				49870BDB287C59320040F968 /* ValidatorTest.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -348,7 +365,7 @@
 			isa = PBXGroup;
 			children = (
 				497C5B6A287A39A4009C2853 /* __Snapshots__ */,
-				497C5B77287A3F9B009C2853 /* Core */,
+				497C5B77287A3F9B009C2853 /* Shared */,
 				497C5B68287A397A009C2853 /* ContentViewTests.swift */,
 				497C5B65287A3854009C2853 /* HomeViewTests.swift */,
 				497C5B6C287A3B03009C2853 /* SettingsViewTests.swift */,
@@ -356,6 +373,7 @@
 				497C5B70287A3CB1009C2853 /* AirportDelaysViewTests.swift */,
 				497C5B72287A3D20009C2853 /* FlightDetailViewTests.swift */,
 				49ACC49D287B4BDB00DB1CC7 /* FlightViewsTests.swift */,
+				49870BE1287C5CED0040F968 /* TripSearchViewTests.swift */,
 			);
 			path = FlightDashboardViewTests;
 			sourceTree = "<group>";
@@ -539,13 +557,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49870BD8287C57C60040F968 /* ValidatedField.swift in Sources */,
 				497C5B44287A2BB3009C2853 /* SettingsView.swift in Sources */,
 				497C5B4C287A2D3E009C2853 /* Airport.swift in Sources */,
 				497C5B59287A31A6009C2853 /* String+Date.swift in Sources */,
+				49870BDA287C57FF0040F968 /* Validator.swift in Sources */,
 				497C5B86287A535C009C2853 /* Date+Operators.swift in Sources */,
 				497C5B50287A2DCC009C2853 /* URLRequest+Codable.swift in Sources */,
 				497C5B5B287A326E009C2853 /* ExampleFlights.swift in Sources */,
 				497C5B47287A2C98009C2853 /* FlightAwareAPI.swift in Sources */,
+				49870BE0287C5C920040F968 /* TripSearchView.swift in Sources */,
 				497C5B42287A2B9E009C2853 /* AirportDelaysView.swift in Sources */,
 				497C5B40287A2B7A009C2853 /* HomeView.swift in Sources */,
 				497C5B5F287A32CA009C2853 /* LoadingView.swift in Sources */,
@@ -574,6 +595,7 @@
 				499258D1287AF3CB005080C6 /* LoadableViewModelTests.swift in Sources */,
 				499258CB287AEB3A005080C6 /* Data+JsonTests.swift in Sources */,
 				49ACC495287B435500DB1CC7 /* AirportDeplaysViewModelTests.swift in Sources */,
+				49870BDC287C59320040F968 /* ValidatorTest.swift in Sources */,
 				497C5B7E287A41EA009C2853 /* String+DateTests.swift in Sources */,
 				49ACC498287B44C400DB1CC7 /* XCTestCase+Identifiable.swift in Sources */,
 				49ACC49A287B466900DB1CC7 /* AirportViewModelTests.swift in Sources */,
@@ -593,10 +615,12 @@
 				497C5B66287A3854009C2853 /* HomeViewTests.swift in Sources */,
 				49ACC49C287B4B2300DB1CC7 /* AirportViewTests.swift in Sources */,
 				497C5B73287A3D20009C2853 /* FlightDetailViewTests.swift in Sources */,
+				49870BE2287C5CED0040F968 /* TripSearchViewTests.swift in Sources */,
 				497C5B71287A3CB1009C2853 /* AirportDelaysViewTests.swift in Sources */,
 				49ACC4A0287B4C4C00DB1CC7 /* AdaptiveStackTests.swift in Sources */,
 				497C5B79287A3FBD009C2853 /* LoadingViewTests.swift in Sources */,
 				497C5B6D287A3B03009C2853 /* SettingsViewTests.swift in Sources */,
+				49870BDE287C5A070040F968 /* ValidatedFieldTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
