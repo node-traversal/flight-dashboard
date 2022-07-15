@@ -93,3 +93,22 @@ struct Trip: Identifiable, Codable {
     let origin: String?
     let destination: String?
 }
+
+extension Trip: AnalyticsRepresentable {
+    var analytics: [String: AnalyticsValue] {
+        [
+            "origin": origin ?? "N/A",
+            "destination": destination ?? "N/A"
+        ]
+    }
+}
+
+extension Flight: AnalyticsRepresentable {
+    var analytics: [String: AnalyticsValue] {
+        [
+            "origin": origin.code,
+            "destination": destination.code,
+            "flightNumber": flightNumber
+        ]
+    }
+}

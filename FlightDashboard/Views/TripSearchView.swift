@@ -32,16 +32,16 @@ struct TripSearchView: View {
                     }) {
                         Text("Search").frame(maxWidth: .infinity)
                     }
+                    .trackTap(action: "Search")
                     .padding(.top, 10.0)
                     .buttonStyle(.borderedProminent)
                     .disabled(!isValid())
                 }
             }
             .navigationTitle("Add Trip")
+            .trackView("TripSearchView")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button("close") {
-                dismiss()
-            })
+            .navigationBarItems(leading: Button("close") { dismiss() }.trackTap(action: "Dimiss"))
         }
     }
 }

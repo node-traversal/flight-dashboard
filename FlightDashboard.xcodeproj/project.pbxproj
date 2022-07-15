@@ -42,6 +42,9 @@
 		49870BDE287C5A070040F968 /* ValidatedFieldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BDD287C5A070040F968 /* ValidatedFieldTests.swift */; };
 		49870BE0287C5C920040F968 /* TripSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BDF287C5C920040F968 /* TripSearchView.swift */; };
 		49870BE2287C5CED0040F968 /* TripSearchViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BE1287C5CED0040F968 /* TripSearchViewTests.swift */; };
+		49870BE4287D9FE80040F968 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BE3287D9FE80040F968 /* AppLogger.swift */; };
+		49870BEE287E4C5E0040F968 /* Datadog in Frameworks */ = {isa = PBXBuildFile; productRef = 49870BED287E4C5E0040F968 /* Datadog */; };
+		49870BF0287E4CD20040F968 /* DataDogLoggerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49870BEF287E4CD20040F968 /* DataDogLoggerAdapter.swift */; };
 		499258CB287AEB3A005080C6 /* Data+JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258CA287AEB3A005080C6 /* Data+JsonTests.swift */; };
 		499258CD287AEF2C005080C6 /* TimeInterval+UnitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258CC287AEF2C005080C6 /* TimeInterval+UnitsTests.swift */; };
 		499258D1287AF3CB005080C6 /* LoadableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499258D0287AF3CB005080C6 /* LoadableViewModelTests.swift */; };
@@ -62,6 +65,8 @@
 		49ACC4A2287B4EE200DB1CC7 /* UserDefaulted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ACC4A1287B4EE200DB1CC7 /* UserDefaulted.swift */; };
 		49ACC4A4287B4F2700DB1CC7 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ACC4A3287B4F2700DB1CC7 /* UserDefaultsManager.swift */; };
 		49ACC4A6287B4FBD00DB1CC7 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49ACC4A5287B4FBD00DB1CC7 /* Preferences.swift */; };
+		49BB3C83288047030044C494 /* SwiftUIView+Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BB3C82288047030044C494 /* SwiftUIView+Analytics.swift */; };
+		49CCD7AA287F035A00FB6579 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CCD7A9287F035A00FB6579 /* Analytics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +121,8 @@
 		49870BDD287C5A070040F968 /* ValidatedFieldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedFieldTests.swift; sourceTree = "<group>"; };
 		49870BDF287C5C920040F968 /* TripSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSearchView.swift; sourceTree = "<group>"; };
 		49870BE1287C5CED0040F968 /* TripSearchViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripSearchViewTests.swift; sourceTree = "<group>"; };
+		49870BE3287D9FE80040F968 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
+		49870BEF287E4CD20040F968 /* DataDogLoggerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDogLoggerAdapter.swift; sourceTree = "<group>"; };
 		499258CA287AEB3A005080C6 /* Data+JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+JsonTests.swift"; sourceTree = "<group>"; };
 		499258CC287AEF2C005080C6 /* TimeInterval+UnitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+UnitsTests.swift"; sourceTree = "<group>"; };
 		499258D0287AF3CB005080C6 /* LoadableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableViewModelTests.swift; sourceTree = "<group>"; };
@@ -141,6 +148,9 @@
 		49ACC4A1287B4EE200DB1CC7 /* UserDefaulted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaulted.swift; sourceTree = "<group>"; };
 		49ACC4A3287B4F2700DB1CC7 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		49ACC4A5287B4FBD00DB1CC7 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		49BB3C82288047030044C494 /* SwiftUIView+Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUIView+Analytics.swift"; sourceTree = "<group>"; };
+		49CCD7A8287EEBBE00FB6579 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		49CCD7A9287F035A00FB6579 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +158,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49870BEE287E4C5E0040F968 /* Datadog in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +220,7 @@
 				497C5B4F287A2DCC009C2853 /* URLRequest+Codable.swift */,
 				497C5B58287A31A6009C2853 /* String+Date.swift */,
 				497C5B84287A5309009C2853 /* TimeInterval+Units.swift */,
+				49BB3C82288047030044C494 /* SwiftUIView+Analytics.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -230,6 +242,9 @@
 				49ACC4A3287B4F2700DB1CC7 /* UserDefaultsManager.swift */,
 				49ACC4A5287B4FBD00DB1CC7 /* Preferences.swift */,
 				49870BD9287C57FF0040F968 /* Validator.swift */,
+				49870BE3287D9FE80040F968 /* AppLogger.swift */,
+				49870BEF287E4CD20040F968 /* DataDogLoggerAdapter.swift */,
+				49CCD7A9287F035A00FB6579 /* Analytics.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -304,6 +319,7 @@
 		499A899A2879AF4400D90178 = {
 			isa = PBXGroup;
 			children = (
+				49CCD7A8287EEBBE00FB6579 /* README.md */,
 				499A89DB2879DED100D90178 /* Environment.xcconfig */,
 				499A89A52879AF4400D90178 /* FlightDashboard */,
 				499A89B62879AF4900D90178 /* FlightDashboardTests */,
@@ -404,7 +420,6 @@
 			buildPhases = (
 				499A899F2879AF4400D90178 /* Sources */,
 				499A89A02879AF4400D90178 /* Frameworks */,
-				497C5B7F287A4826009C2853 /* ShellScript */,
 				499A89A12879AF4400D90178 /* Resources */,
 			);
 			buildRules = (
@@ -412,6 +427,9 @@
 			dependencies = (
 			);
 			name = FlightDashboard;
+			packageProductDependencies = (
+				49870BED287E4C5E0040F968 /* Datadog */,
+			);
 			productName = FlightDashboard;
 			productReference = 499A89A32879AF4400D90178 /* FlightDashboard.app */;
 			productType = "com.apple.product-type.application";
@@ -493,6 +511,7 @@
 			mainGroup = 499A899A2879AF4400D90178;
 			packageReferences = (
 				499A8A00287A263300D90178 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				49870BEC287E4C5E0040F968 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */,
 			);
 			productRefGroup = 499A89A42879AF4400D90178 /* Products */;
 			projectDirPath = "";
@@ -532,26 +551,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		497C5B7F287A4826009C2853 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		499A899F2879AF4400D90178 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -565,13 +564,17 @@
 				497C5B86287A535C009C2853 /* Date+Operators.swift in Sources */,
 				497C5B50287A2DCC009C2853 /* URLRequest+Codable.swift in Sources */,
 				497C5B5B287A326E009C2853 /* ExampleFlights.swift in Sources */,
+				49870BF0287E4CD20040F968 /* DataDogLoggerAdapter.swift in Sources */,
 				497C5B47287A2C98009C2853 /* FlightAwareAPI.swift in Sources */,
 				49870BE0287C5C920040F968 /* TripSearchView.swift in Sources */,
+				49BB3C83288047030044C494 /* SwiftUIView+Analytics.swift in Sources */,
 				497C5B42287A2B9E009C2853 /* AirportDelaysView.swift in Sources */,
+				49870BE4287D9FE80040F968 /* AppLogger.swift in Sources */,
 				497C5B40287A2B7A009C2853 /* HomeView.swift in Sources */,
 				497C5B5F287A32CA009C2853 /* LoadingView.swift in Sources */,
 				497C5B88287A5E9F009C2853 /* AdaptiveStack.swift in Sources */,
 				49ACC4A4287B4F2700DB1CC7 /* UserDefaultsManager.swift in Sources */,
+				49CCD7AA287F035A00FB6579 /* Analytics.swift in Sources */,
 				497C5B54287A30F3009C2853 /* AirportView.swift in Sources */,
 				499A89A92879AF4400D90178 /* ContentView.swift in Sources */,
 				49ACC4A6287B4FBD00DB1CC7 /* Preferences.swift in Sources */,
@@ -965,6 +968,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		49870BEC287E4C5E0040F968 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Datadog/dd-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		499A8A00287A263300D90178 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing.git";
@@ -976,6 +987,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		49870BED287E4C5E0040F968 /* Datadog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49870BEC287E4C5E0040F968 /* XCRemoteSwiftPackageReference "dd-sdk-ios" */;
+			productName = Datadog;
+		};
 		499A8A01287A263300D90178 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 499A8A00287A263300D90178 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;

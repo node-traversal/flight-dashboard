@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-class HomeViewModel: ObservableObject {
+class HomeViewModel: ObservableObject, AnalyticsRepresentable {
     @Published private(set) var trips: [Trip] = []
-       
+    private let logger = LogFactory.logger()
+    
     let coreAirports = [Airport(id: "KDAL", code: "DAL")]
+    
+    var analytics: [String: AnalyticsValue] { trips.first?.analytics ?? [:] }
     
     // MARK: - public methods
     
@@ -25,11 +28,11 @@ class HomeViewModel: ObservableObject {
     func addTrip(origin: String, destination: String) {
         let previous = trips.contains { $0.origin == origin && $0.destination == destination }
         if !previous {
-            print("done searching \(origin) -> \(destination)")
+            logger.notice("done searching \(origin) -> \(destination)")
             trips += [Trip(origin: origin, destination: destination)]
         }
     }
-    
+        
     // MARK: - private methods
         
     private func favs() -> Favorites { Favorites() }
@@ -38,19 +41,24 @@ class HomeViewModel: ObservableObject {
 struct HomeView: View {
     @ObservedObject var viewModel = HomeViewModel()
     @State private var showingSheet = false
-    
+ 
     var body: some View {
         NavigationView {
             VStack {
                 Text("")
                     .navigationTitle("Dashboard")
+                    .trackView("HomeView", data: viewModel)
+                    .onAppear {
+                        viewModel.load()
+                    }
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         Button {
                             self.showingSheet.toggle()
                         } label: {
                             Image(systemName: "plus")
-                        }.sheet(isPresented: $showingSheet) {
+                        }
+                        .sheet(isPresented: $showingSheet) {
                             TripSearchView { origin, destination in
                                 viewModel.addTrip(origin: origin, destination: destination)
                             }
@@ -90,8 +98,6 @@ struct HomeView: View {
                 }
                 Spacer()
             }
-        }.onAppear {
-            viewModel.load()
         }
     }
 }

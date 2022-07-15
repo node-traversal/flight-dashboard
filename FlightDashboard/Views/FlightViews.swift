@@ -90,6 +90,7 @@ struct ArrivingFlightView: View {
     }
 }
 
+#if DEBUG
 struct FlightViews_Previews: PreviewProvider {
     static var previews: some View {
         let flight = ExampleFlights.inflight
@@ -105,3 +106,4 @@ struct FlightViews_Previews: PreviewProvider {
         .padding(.all)
     }
 }
+#endif

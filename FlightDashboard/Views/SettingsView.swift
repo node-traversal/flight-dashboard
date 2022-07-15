@@ -20,8 +20,11 @@ class SettingsViewModel: ObservableObject {
     }
     
     func updateLiveApi(_ enabled: Bool) {
-        env.liveApi = enabled
-        FlightAwareAPIManager.configure(live: enabled)
+        let current = env.liveApi
+        if current != enabled {
+            env.liveApi = enabled
+            FlightAwareAPIManager.configure(live: enabled)
+        }
     }
 }
 
@@ -33,12 +36,17 @@ struct SettingsView: View {
             HStack {
                 Text("")
                 .navigationTitle("Settings")
+                .trackView("SettingsView")
                 .navigationBarTitleDisplayMode(.inline)
                 VStack {
                     HStack {
+#if DEBUG
                         Toggle("Live API", isOn: $viewModel.liveApi).onChange(of: viewModel.liveApi) { value in
                             viewModel.updateLiveApi(value)
                         }
+#else
+                        Text("Production settings here")
+#endif
                     }
                     Spacer()
                 }.onAppear {
@@ -51,8 +59,10 @@ struct SettingsView: View {
     }
 }
 
+#if DEBUG
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
     }
 }
+#endif

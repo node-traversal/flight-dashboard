@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct FlightDashboardApp: App {
     init() {
+        DataDogAdapter.initialze()
         let env = EnvironmentFlags()
         FlightAwareAPIManager.configure(live: env.liveApi ?? false)
     }

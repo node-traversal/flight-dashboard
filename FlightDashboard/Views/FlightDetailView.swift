@@ -32,11 +32,14 @@ struct FlightDetailView: View {
         }
         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .frame(maxWidth: .infinity)
+        .trackView("FlightDetailView", data: viewModel.flight)
     }
 }
 
+#if DEBUG
 struct FlightDetailView_Previews: PreviewProvider {
     static var previews: some View {
         FlightDetailView(viewModel: FlightDetailViewModel(flight: ExampleFlights.inflight))
     }
 }
+#endif

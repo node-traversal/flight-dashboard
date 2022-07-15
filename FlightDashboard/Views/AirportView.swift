@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class AirportViewModel: LoadableViewModel {
+class AirportViewModel: LoadableViewModel, AnalyticsRepresentable {
     enum SearchType: String, CaseIterable {
         case departing = "Departing"
         case departed = "Departed"
@@ -49,6 +49,8 @@ class AirportViewModel: LoadableViewModel {
 
         updateFlights(self.flights + self.favFlights)
     }
+    
+    var analytics: [String: AnalyticsValue] { ["airport": airport] }
     
     // MARK: - private methods
         
@@ -93,7 +95,9 @@ struct AirportView: View {
                     Task {
                         await viewModel.load()
                     }
-                }.disabled(viewModel.state != .loaded)
+                }
+                .disabled(viewModel.state != .loaded)
+                .trackView("AirportView", data: viewModel)
                 LoadingView(loading: $viewModel.state, showList: false, onLoad: viewModel.load) {
                     List {
                         if !viewModel.favFlights.isEmpty {
@@ -143,8 +147,10 @@ struct AirportView: View {
     }
 }
 
+#if DEBUG
 struct AirportView_Previews: PreviewProvider {
     static var previews: some View {
         AirportView(viewModel: AirportViewModel(state: .loaded, flights: ExampleFlights.allFlights))
     }
 }
+#endif

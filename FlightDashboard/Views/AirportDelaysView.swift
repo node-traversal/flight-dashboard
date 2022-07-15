@@ -9,7 +9,8 @@ import SwiftUI
 
 class AirportDeplaysViewModel: LoadableViewModel {
     @Published private(set) var airportDelays: [AirportDelay]
-        
+    private let logger = LogFactory.logger(.delays)
+    
     init(state: LoadingState = .idle, delays: [AirportDelay] = []) {
         self.airportDelays = delays
         super.init(state: state)
@@ -31,7 +32,7 @@ class AirportDeplaysViewModel: LoadableViewModel {
         case "red":
             return Color.red
         default:
-            print("Invalid color: \(code)")
+            logger.debug("Invalid color: \(code)")
             return Color.white
         }
     }
@@ -49,6 +50,7 @@ struct AirportDelaysView: View {
             VStack {
                 Text("")
                     .navigationTitle("Delays")
+                    .trackView("AirportDelaysView")
                     .navigationBarTitleDisplayMode(.inline)
                 LoadingView(loading: $viewModel.state, onLoad: viewModel.load) {
                     Section(header: Text("Airport Delays")) {
@@ -64,8 +66,10 @@ struct AirportDelaysView: View {
     }
 }
 
+#if DEBUG
 struct AirportDelaysView_Previews: PreviewProvider {
     static var previews: some View {
         AirportDelaysView(viewModel: AirportDeplaysViewModel(state: .loaded, delays: ExampleDelays.delays))
     }
 }
+#endif

@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 class ExamplesFlightAwareAPI: FlightAwareAPI {
     override func getDepartures(airport: String) async throws -> [Flight] {
        return [ExampleFlights.inflight]
@@ -28,3 +29,4 @@ class ExamplesFlightAwareAPI: FlightAwareAPI {
        return ExampleDelays.allDelays
    }
 }
+#endif

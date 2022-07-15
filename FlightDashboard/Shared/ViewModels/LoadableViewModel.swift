@@ -17,6 +17,7 @@ enum LoadingState {
 @MainActor
 class LoadableViewModel: ObservableObject {
     @Published var state: LoadingState = .idle
+    private let logger = LogFactory.logger()
     
     init(state: LoadingState) {
         self.state = state
@@ -29,7 +30,7 @@ class LoadableViewModel: ObservableObject {
             try await load()
             self.state = .loaded
         } catch {
-            print(error)
+            logger.error(error)
             self.state = .error
         }
     }

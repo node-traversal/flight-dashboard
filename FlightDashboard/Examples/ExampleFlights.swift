@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 class ExampleDelays {
     static let international = AirportDelay(id: "LFPG", colorCode: "none", reasons: [DelayReason(text: "non-domestic")])
     
@@ -72,3 +73,4 @@ class ExampleFlights {
     
     static let allFlights = [scheduled, inflight, landed]
 }
+#endif

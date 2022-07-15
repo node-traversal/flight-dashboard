@@ -16,17 +16,18 @@ class UserDefaultsManager {
     }()
     
     static func configure(storage: Bool) {
-        print("configuring user-defaults manager: \(storage)")
+#if DEBUG
+        LogFactory.logger(.userDefaults).warning("configuring user-defaults manager: \(storage)")
         self.storage = storage
+#endif
     }
     
     static func get() -> UserDefaults {
+#if DEBUG
         if !storage {
-            print("using offline user-defaults")
             return offline
         }
-        
-        print("using standard user-defaults")
+#endif
         return .standard
     }
 }

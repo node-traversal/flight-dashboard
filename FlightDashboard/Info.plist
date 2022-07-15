@@ -6,5 +6,11 @@
 	<string>${FLIGHT_AWARE_API_KEY}</string>
 	<key>FLIGHT_DASHBOARD_APP_GROUP</key>
 	<string>group.io.nodetraversal</string>
+	<key>DATADOG_CLIENT_ID</key>
+	<string>${DATADOG_CLIENT_ID}</string>
+	<key>LOGGER_FINE_ENABLED</key>
+	<string>${LOGGER_FINE_ENABLED}</string>
+	<key>DATADOG_APP_ID</key>
+	<string>${DATADOG_APP_ID}</string>
 </dict>
 </plist>

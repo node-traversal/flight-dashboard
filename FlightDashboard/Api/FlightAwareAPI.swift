@@ -11,43 +11,27 @@ struct FlightAwareError: Error {
     let url: String
 }
 
-class FlightAwareRequestFactory: UrlRequestProvider {
-    // App must not start if there is no api-key
-    // swiftlint:disable force_cast
-    private let apiKey = Bundle.main.object(forInfoDictionaryKey: "FLIGHT_AWARE_API_KEY") as! String
-    // swiftlint:enable force_cast
-    private let apiUrl = "https://aeroapi.flightaware.com/aeroapi"
-    
-    func request(method: HttpMethod, uri: String) throws -> URLRequest {
-        let urlString = "\(apiUrl)/\(uri)"
-        guard let requestUrl = URL(string: urlString) else {
-            throw FlightAwareError(url: urlString)
-        }
-        
-        var request = URLRequest(url: requestUrl)
-        request.addValue(apiKey, forHTTPHeaderField: "x-apikey")
-        
-        return request
-    }
-    
-    func request<T>(_ type: T.Type, method: HttpMethod, uri: String) async throws -> T where T: Decodable {
-        return try await request(method: method, uri: uri).data(type)
-    }
-}
-
 class FlightAwareAPIManager {
+#if DEBUG
     private static var live = false
+#else
+    private static var live = true
+#endif
     
     static func configure(live: Bool) {
-        print("configuring flight-aware api live: \(live)")
+#if DEBUG
+        LogFactory.logger(.api).warning("configuring flight-aware api live: \(live)")
         self.live = live
+#endif
     }
     
     static func get() -> FlightAwareAPI {
+#if DEBUG
         if !live {
+            LogFactory.logger(.api).warning("using example flight aware api")
             return ExamplesFlightAwareAPI()
         }
-        
+#endif
         return FlightAwareAPI()
     }
 }
@@ -122,5 +106,29 @@ class FlightAwareAPI {
     func getAirportDelays() async throws -> [AirportDelay] {
         return try await provider.request(AirportDelaysData.self, method: .get,
                                           uri: "/airports/delays").delays
+    }
+}
+
+class FlightAwareRequestFactory: UrlRequestProvider {
+    // App must not start if there is no api-key
+    // swiftlint:disable force_cast
+    private let apiKey = Bundle.main.object(forInfoDictionaryKey: "FLIGHT_AWARE_API_KEY") as! String
+    // swiftlint:enable force_cast
+    private let apiUrl = "https://aeroapi.flightaware.com/aeroapi"
+    
+    func request(method: HttpMethod, uri: String) throws -> URLRequest {
+        let urlString = "\(apiUrl)/\(uri)"
+        guard let requestUrl = URL(string: urlString) else {
+            throw FlightAwareError(url: urlString)
+        }
+        
+        var request = URLRequest(url: requestUrl)
+        request.addValue(apiKey, forHTTPHeaderField: "x-apikey")
+        
+        return request
+    }
+    
+    func request<T>(_ type: T.Type, method: HttpMethod, uri: String) async throws -> T where T: Decodable {
+        return try await request(method: method, uri: uri).data(type)
     }
 }
