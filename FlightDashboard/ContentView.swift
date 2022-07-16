@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct ContentView: View {
-    private let tabPadding = 20.0
+    private let tabPadding = 21.0
     
     var body: some View {
         TabView {

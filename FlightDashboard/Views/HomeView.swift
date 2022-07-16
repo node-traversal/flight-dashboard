@@ -8,97 +8,109 @@
 import SwiftUI
 
 class HomeViewModel: ObservableObject, AnalyticsRepresentable {
-    @Published private(set) var trips: [Trip] = []
+    @Published var trips: [TripEntry] = []
     private let logger = LogFactory.logger()
     
     let coreAirports = [Airport(id: "KDAL", code: "DAL")]
-    
-    var analytics: [String: AnalyticsValue] { trips.first?.analytics ?? [:] }
+        
+    var analytics: [String: AnalyticsValue] { [:] }
     
     // MARK: - public methods
     
-    func load() {
-        if let trip = favs().trip {
-            trips = [trip]
+    @MainActor
+    func load(favTrip: Trip?) async {
+        if let favTrip = favTrip {
+            let flight = ExampleFlights.almostBoarding()
+            trips = flight.tripEntries
         } else {
             trips = []
         }
     }
     
     func addTrip(origin: String, destination: String) {
-        let previous = trips.contains { $0.origin == origin && $0.destination == destination }
-        if !previous {
-            logger.notice("done searching \(origin) -> \(destination)")
-            trips += [Trip(origin: origin, destination: destination)]
-        }
+        logger.notice("done searching \(origin) -> \(destination)")
     }
-        
-    // MARK: - private methods
-        
-    private func favs() -> Favorites { Favorites() }
+    
+    var airport: Airport { coreAirports.first! }
 }
 
 struct HomeView: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
     @ObservedObject var viewModel = HomeViewModel()
+    @EnvironmentObject var settings: EnvironmentSettings
+    @ObservedObject var router = ViewRouter()
     @State private var showingSheet = false
- 
+    @State private var path: [Airport] = []
+    
+    let gradient = LinearGradient(
+        gradient: Gradient(stops: [
+            .init(color: .clear, location: 0),
+            .init(color: .red, location: 0.9)
+        ]),
+        startPoint: .bottom,
+        endPoint: .top
+    )
+    
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             VStack {
-                Text("")
-                    .navigationTitle("Dashboard")
-                    .trackView("HomeView", data: viewModel)
-                    .onAppear {
-                        viewModel.load()
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        Button {
-                            self.showingSheet.toggle()
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                        .sheet(isPresented: $showingSheet) {
-                            TripSearchView { origin, destination in
-                                viewModel.addTrip(origin: origin, destination: destination)
-                            }
-                        }
-                    }
-                List {
-                    if !viewModel.trips.isEmpty {
-                        Section(header: Text("Trips")) {
-                            ForEach(viewModel.trips) { trip in
-                                HStack {
-                                    switch trip.type {
-                                    case .flight:
-                                        Text(trip.origin ?? "").bold()
-                                        Image(systemName: "airplane")
-                                            .imageScale(.large)
-                                            .foregroundColor(.accentColor)
-                                        Text(trip.destination ?? "").bold()
-                                        Text("| \(trip.id)")
-                                    case .destination:
-                                        Text(trip.origin ?? "").bold()
-                                        Image(systemName: "airplane")
-                                            .imageScale(.large)
-                                            .foregroundColor(.accentColor)
-                                        Text(trip.destination ?? "").bold()
+                Image("Dallas")
+                    .frame(maxHeight: sizeClass == .compact ? 300 : 200, alignment: .topLeading)
+                    .mask(gradient)
+                    .clipped()
+                HStack {
+                    VStack {
+                        AdaptiveStack {
+                            VStack {
+                                if let trip = settings.trip, settings.calc() {
+//                                    HStack {
+//                                        NavigationLink(destination: LoadableFlightDetailView(viewModel: FlightInfoViewModel(flightId: trip.id))
+//                                            .navigationTitle("My Trip")) {
+//                                                TripSummaryView(date: trip.relativeDate, trip: trip).padding(.horizontal, 10)
+//                                        }
+//                                    }
+//                                    .padding(20.0)
+//                                    .foregroundColor(.white)
+//                                    .background(.blue)
+//                                    .cornerRadius(10)
+                                } else {
+                                    Text("Add a Trip")
+                                    .padding(30.0)
+                                    .foregroundColor(.blue)
+                                    .border(.blue)
+                                }
+                                ForEach(viewModel.trips) { vTrip in
+                                    VStack {
+                                        Text(vTrip.effectiveDate, style: .relative)
+                                        TripSummaryView(date: vTrip.effectiveDate, trip: vTrip.trip).padding(.horizontal, 10)
                                     }
+                                    .padding(20.0)
+                                    .foregroundColor(.white)
+                                    .background(.purple)
+                                    .cornerRadius(10)
                                 }
                             }
-                        }
-                    }
-                    Section(header: Text("Core Airports")) {
-                        ForEach(viewModel.coreAirports) { airport in
-                            NavigationLink(destination: AirportView(viewModel: AirportViewModel(airport: airport.id)).navigationTitle(airport.code)) {
-                                Text("\(airport.code)")
+                            .onAppear {
+                                Task {
+                                    await viewModel.load(favTrip: settings.trip)
+                                }
                             }
+                            NavigationLink(viewModel.airport.code) {
+                                AirportView(viewModel: AirportViewModel(airport: viewModel.airport.id))
+                                    .navigationTitle("\(viewModel.airport.code) Airport")
+                            }
+                            .foregroundColor(.white)
+                            .padding(30.0)
+                            .background(.green)
+                            .cornerRadius(10)
                         }
+                        Spacer()
                     }
-                }
-                Spacer()
-            }
+                    Spacer()
+                }.padding()
+            }.edgesIgnoringSafeArea(.top)
         }
+        .environmentObject(router)
     }
 }
 

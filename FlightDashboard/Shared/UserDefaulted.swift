@@ -10,52 +10,32 @@ import Foundation
 @propertyWrapper
 struct SimpleUserDefaulted<Value> {
     let key: String
-    var storage: UserDefaults = UserDefaultsManager.get()
-    private let logger = LogFactory.logger(.userDefaults)
+    var storage: UserDefaults = UserDefaultsManager.shared
     
     var wrappedValue: Value? {
         get {
             let value = storage.value(forKey: key) as? Value
-            logger.debug("\(key)=\(String(describing: value))")
+            print("\(key)=\(String(describing: value))")
             return value
         }
         set {
-            logger.debug("setting \(key)=\(String(describing: newValue))")
+            print("setting \(key)=\(String(describing: newValue))")
             storage.setValue(newValue, forKey: key)
         }
     }
 }
 
 @propertyWrapper
-struct UserDefaulted<ValueType: Codable> {
+struct UserDefaulted<ValueType: Cachable> {
     let key: String
-    var storage: UserDefaults = UserDefaultsManager.get()
-    private let logger = LogFactory.logger(.userDefaults)
+    var storage: UserDefaults = UserDefaultsManager.shared
     
     var wrappedValue: ValueType? {
         get {
-            guard let data: Data = storage.data(forKey: key) else {
-                logger.debug("no value stored for \(key)")
-                return nil
-            }
-            do {
-                logger.text("\(key):")
-                logger.info(data.prettyPrintJson)
-                let value = try JSONDecoder().decode(ValueType.self, from: data)
-                return value
-            } catch {
-                logger.error(error)
-                return nil
-            }
+            return UserDefaultsManager.fetch(ValueType.self, key: key)
         }
         set {
-            guard let data = try? JSONEncoder().encode(newValue) else {
-                logger.error("failed to write\(key)")
-                return
-            }
-            logger.text("writing \(key):")
-            logger.info(data.prettyPrintJson)
-            storage.set(data, forKey: key)
+            UserDefaultsManager.write(newValue, key: key)
         }
     }
 }

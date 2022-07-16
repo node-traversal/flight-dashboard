@@ -24,4 +24,28 @@ extension TimeInterval {
     var milliseconds: Int {
         Int((self * 1000).truncatingRemainder(dividingBy: 1000))
     }
+        
+    static func from(days: Double) -> TimeInterval {
+        return days * 86400.0
+    }
+    
+    static func from(hours: Double) -> TimeInterval {
+        return hours * 3600.0
+    }
+    
+    static func from(minutes: Double) -> TimeInterval {
+        return minutes * 60.0
+    }
+    
+    static func from(days: Int) -> TimeInterval {
+        return from(days: Double(days))
+    }
+    
+    static func from(hours: Int) -> TimeInterval {
+        return from(hours: Double(hours))
+    }
+    
+    static func from(minutes: Int) -> TimeInterval {
+        return from(minutes: Double(minutes))
+    }
 }

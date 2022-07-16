@@ -8,11 +8,13 @@
 import SwiftUI
 
 class AirportDeplaysViewModel: LoadableViewModel {
-    @Published private(set) var airportDelays: [AirportDelay]
+    @Published var airportDelays: [AirportDelay]
+    @Published var selectedAirport: AirportDelay?
+    
     private let logger = LogFactory.logger(.delays)
     
     init(state: LoadingState = .idle, delays: [AirportDelay] = []) {
-        self.airportDelays = delays
+        self.airportDelays = ExampleDelays.delays
         super.init(state: state)
     }
     
@@ -33,7 +35,7 @@ class AirportDeplaysViewModel: LoadableViewModel {
             return Color.red
         default:
             logger.debug("Invalid color: \(code)")
-            return Color.white
+            return Color.clear
         }
     }
     
@@ -44,23 +46,46 @@ class AirportDeplaysViewModel: LoadableViewModel {
 
 struct AirportDelaysView: View {
     @ObservedObject var viewModel: AirportDeplaysViewModel = AirportDeplaysViewModel()
+    @ObservedObject var router = ViewRouter()
+    @State private var columnVisibility =
+        NavigationSplitViewVisibility.all
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("")
-                    .navigationTitle("Delays")
-                    .trackView("AirportDelaysView")
-                    .navigationBarTitleDisplayMode(.inline)
-                LoadingView(loading: $viewModel.state, onLoad: viewModel.load) {
-                    Section(header: Text("Airport Delays")) {
-                        ForEach(viewModel.airportDelays, id: \.id) { airport in
-                            NavigationLink(destination: AirportView(viewModel: AirportViewModel(airport: airport.id)).navigationTitle(airport.code)) {
+        VStack{
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                HStack {
+                    Text("Airport Delays")
+                        .padding(.leading, 10.0)
+                    Spacer()
+                }
+                LoadingView(loading: $viewModel.state, showList: false, onLoad: viewModel.load) {
+                    VStack{
+
+                        List(viewModel.airportDelays, selection: $viewModel.selectedAirport) { airport in
+                            NavigationLink(value: airport) {
                                 Text("\(airport.code)-\(airport.name)")
                             }.listRowBackground(viewModel.color(airport.colorCode))
+                        }.refreshable {
+                            Task {
+                                await viewModel.load()
+                            }
                         }
-                    }
+                    }.navigationSplitViewColumnWidth(
+                        min: 10, ideal: 20, max: 40)
                 }
+            } detail: {
+                NavigationStack(path: $router.path) {
+                    VStack {
+                        if let airport = viewModel.selectedAirport {
+                            AirportView(viewModel: AirportViewModel(airport: airport.id))
+                                .navigationTitle(airport.code)
+                                .navigationBarTitleDisplayMode(.inline)
+                        } else {
+                            Text("Select an Airport")
+                        }
+                        Spacer()
+                    }
+                }.environmentObject(router)
             }
         }
     }

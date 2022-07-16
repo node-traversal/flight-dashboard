@@ -7,3 +7,4 @@ xcuserdata/
 
 # secrets
 Environment.xcconfig
+/fastlane/test_output/

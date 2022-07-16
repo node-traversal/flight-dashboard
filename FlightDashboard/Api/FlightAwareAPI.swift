@@ -28,7 +28,7 @@ class FlightAwareAPIManager {
     static func get() -> FlightAwareAPI {
 #if DEBUG
         if !live {
-            LogFactory.logger(.api).warning("using example flight aware api")
+            //LogFactory.logger(.api).warning("using example flight aware api")
             return ExamplesFlightAwareAPI()
         }
 #endif
@@ -107,6 +107,18 @@ class FlightAwareAPI {
         return try await provider.request(AirportDelaysData.self, method: .get,
                                           uri: "/airports/delays").delays
     }
+    
+    func getFlightInfo(flightId: String) async throws -> Flight? {
+        if let cachedFlight = FlightCache.shared[flightId] {
+            print("cache hit: \(flightId)")
+            return cachedFlight
+        } else {
+            print("cache miss: \(flightId)")
+            let flight = try await provider.request(FlightsData.self, method: .get, uri: "/flights/\(flightId)").flights.first
+            FlightCache.shared[flightId] = flight
+            return flight
+        }
+    }
 }
 
 class FlightAwareRequestFactory: UrlRequestProvider {
@@ -130,5 +142,33 @@ class FlightAwareRequestFactory: UrlRequestProvider {
     
     func request<T>(_ type: T.Type, method: HttpMethod, uri: String) async throws -> T where T: Decodable {
         return try await request(method: method, uri: uri).data(type)
+    }
+}
+
+protocol EntityCache {
+    associatedtype CacheType: Codable & Identifiable
+    
+    subscript(id: String) -> CacheType? { get set }
+}
+
+class FlightCache: EntityCache {
+    private class CacheEntry {
+        let flight: Flight
+        init(flight: Flight) {
+            self.flight = flight
+        }
+    }
+    public static let shared = FlightCache()
+    private let cache = NSCache<NSString, CacheEntry>()
+    
+    subscript(code: String) -> Flight? {
+        get {
+            let flight = cache.object(forKey: code as NSString)?.flight
+            return flight
+        }
+        set(newValue) {
+            guard let flight = newValue else { return }
+            cache.setObject(CacheEntry(flight: flight), forKey: code  as NSString)
+        }
     }
 }

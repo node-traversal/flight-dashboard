@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum LoadingState {
+enum LoadingState: String {
     case idle
     case loading
     case loaded

@@ -17,20 +17,22 @@ final class PreferencesTests: XCTestCase {
     
     func testFavTrip() throws {
         let favs = Favorites()
-        favs.trip = ExampleFlights.inflight.toTrip()
+        EnvironmentSettings().fav(ExampleFlights.inflight().toTrip())
         let trip = favs.trip
         XCTAssertEqual(trip?.id, "SWA-inflight")
     }
     
     func testLiveApiOn() throws {
         var env = EnvironmentFlags()
-        env.liveApi = true
+        EnvironmentSettings().liveApi = true
+        let updated = env.liveApi
         XCTAssert(env.liveApi ?? false)
     }
     
     func testLiveApiOff() throws {
         var env = EnvironmentFlags()
-        env.liveApi = false
-        XCTAssert(!(env.liveApi ?? true))
+        EnvironmentSettings().liveApi = false
+        let updated = env.liveApi ?? true
+        XCTAssert(!updated)
     }
 }

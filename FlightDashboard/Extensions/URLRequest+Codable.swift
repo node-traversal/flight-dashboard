@@ -31,7 +31,7 @@ extension URLSession: UrlSessionDataProvider {
 extension URLRequest {
     func data<T>(_ type: T.Type, _ requiredStatus: Int = 200, urlSession: UrlSessionDataProvider = URLSession.shared) async throws -> T where T: Decodable {
         let url = self.url?.absoluteString ?? "???"
-        AnalyticsFactory.startResourceLoading(url: url, request: self)
+        // AnalyticsFactory.startResourceLoading(url: url, request: self)
         
         let (data, response) = try await urlSession.data(for: self, delegate: nil)
         let statusCode = (response as? HTTPURLResponse)?.statusCode
@@ -43,7 +43,7 @@ extension URLRequest {
         print("RESPONSE: \(url): ")
         print(data.prettyPrintJson)
         print("---------------------------------------")
-        AnalyticsFactory.stopResourceLoading(url: url, response: response)
+        // AnalyticsFactory.stopResourceLoading(url: url, response: response)
         
         return try JSONDecoder().decode(type, from: data)
     }

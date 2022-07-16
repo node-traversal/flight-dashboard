@@ -74,9 +74,9 @@ struct Analytics {
             print("[UI]  - \(key)=\(value)")
         }
         
-        if adapters.isEmpty {
-            print("[UI] WARNING: no analytics configured!")
-        }
+//        if adapters.isEmpty {
+//            print("[UI] WARNING: no analytics configured!")
+//        }
         adapters.forEach { adapter in
             adapter.startView(key: key, name: viewName, params: params)
         }

@@ -31,4 +31,9 @@ extension Date {
     public func time(_ zone: TimeZone) -> String {
         return Date.format(self, format: "h:mma zzz", zone: zone)
     }
+    public func iso() -> String {
+        //ISO8601DateFormatter()
+        return self.ISO8601Format()
+    }
+    
 }

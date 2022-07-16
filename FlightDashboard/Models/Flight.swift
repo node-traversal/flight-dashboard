@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct Flight: Codable, Identifiable {
+struct Flight: Codable, Identifiable, Hashable {
+    private static let boardingTime = 1
+    
     enum CodingKeys: String, CodingKey {
         case id = "ident"
         case flightNumber = "flight_number"
@@ -65,40 +67,116 @@ struct Flight: Codable, Identifiable {
         return ""
     }
     
-    func toTrip() -> Trip { Trip(flightNumber: id, origin: origin.code, destination: destination.code) }
-}
-
-struct Trip: Identifiable, Codable {
-    enum TripType: String, Codable {
-        case flight
-        case destination
+    func toTrip() -> Trip { Trip(flightNumber: id, origin: origin.code, destination: destination.code, state: .upcoming) }
+    
+    var boardingDate: Date {
+        return departs.date().addingTimeInterval(-10)
+        //return departs.date().addingTimeInterval(TimeInterval.from(minutes: -Double(Flight.boardingTime)))
     }
     
-    init(origin: String, destination: String) {
-        self.type = .destination
-        self.origin = origin
-        self.destination = destination
-        self.id = "\(origin)-\(destination)"
+    func getState(_ currentDate: Date = Date()) -> TripState {
+        guard scheduledDeparts != nil else { return .upcoming }
+        guard actualArrival == nil else { return .landed }
+        
+        let date = departs.date()
+        guard Calendar.current.isDateInToday(date) else { return .upcoming }
+        
+        var state: TripState = .dayOfTravel
+        
+        if progress <= 0 {
+            let timeToBoard: TimeInterval = boardingDate - currentDate
+            let countDown = timeToBoard.minutes
+            if countDown <= 0 {
+                state = .boarding
+            }
+        } else {
+            state = .inflight
+            if let estimatedArrival = estimatedArrival, date > estimatedArrival.date()  {
+                state = .landed
+            }
+        }
+        
+        return state
+    }
+                            
+    private func createTripEntry(state: TripState, effectiveDate: Date, endDate: Date) -> TripEntry {
+        return TripEntry(id: state.rawValue, effectiveDate: effectiveDate, trip: Trip(
+            flightNumber: id,
+            origin: origin.code,
+            destination: destination.code,
+            state: state,
+            gate: gateDeparts,
+            relativeDate: endDate
+        ))
     }
     
-    init(flightNumber: String, origin: String, destination: String) {
-        self.type = .flight
-        self.origin = origin
-        self.destination = destination
-        self.id = flightNumber
-    }
+//    var debugTripEntries: [TripEntry] {
+//        let now = Date()
+//        let boardingTime = now.addingTimeInterval(20)
+//        // let boardingTime = now.addingTimeInterval(-50) // landed
+//        // let boardingTime = now.addingTimeInterval(-25) // arriving
+//        // let boardingTime = now.addingTimeInterval(-10) // boarding
+//        // let boardingTime = now.addingTimeInterval(20) // default
+//        // let boardingTime = now.addingTimeInterval(TimeInterval.from(hours: 2))
+//        // let boardingTime = now.addingTimeInterval(TimeInterval.from(days: 2))
+//        let departureTime = boardingTime.addingTimeInterval(20)
+//        let arrivalTime = departureTime.addingTimeInterval(20)
+//        let dayOfTravel = Calendar(identifier: .gregorian).startOfDay(for: departureTime).addingTimeInterval(TimeInterval.from(hours: 1))
+//        var entries: [TripEntry] = []
+//
+//        if now < dayOfTravel {
+//            entries.append(createTripEntry(state: .upcoming, effectiveDate: now, endDate: departureTime))
+//        }
+//        if now < boardingTime {
+//            entries.append(createTripEntry(state: .dayOfTravel, effectiveDate: dayOfTravel, endDate: boardingTime))
+//        }
+//        if now < departureTime {
+//            entries.append(createTripEntry(state: .boarding, effectiveDate: boardingTime.addingTimeInterval(-10), endDate: departureTime))
+//        }
+//        if now < arrivalTime {
+//            entries.append(createTripEntry(state: .inflight, effectiveDate: departureTime, endDate: arrivalTime))
+//        }
+//
+//        entries.append(createTripEntry(state: .landing, effectiveDate: arrivalTime.addingTimeInterval(-10), endDate: arrivalTime))
+//        entries.append(createTripEntry(state: .landed, effectiveDate: arrivalTime.addingTimeInterval(10), endDate: arrivalTime))
+//
+//        return entries
+//    }
     
-    var id: String
-    let type: TripType
-    let origin: String?
-    let destination: String?
+    var tripEntries: [TripEntry] {
+        let now = Date()
+        let boardingTime = boardingDate
+        let departureTime = departs.date()
+        let arrivalTime = arrives.date()
+        let dayOfTravel = Calendar(identifier: .gregorian).startOfDay(for: departureTime).addingTimeInterval(TimeInterval.from(hours: 1))
+        var entries: [TripEntry] = []
+        
+        if now < dayOfTravel {
+            entries.append(createTripEntry(state: .upcoming, effectiveDate: now, endDate: departureTime))
+        }
+        if now < boardingTime {
+            entries.append(createTripEntry(state: .dayOfTravel, effectiveDate: dayOfTravel, endDate: boardingTime))
+        }
+        if now < departureTime {
+            entries.append(createTripEntry(state: .boarding, effectiveDate: boardingTime.addingTimeInterval(-10), endDate: departureTime))
+        }
+        if now < arrivalTime {
+            entries.append(createTripEntry(state: .inflight, effectiveDate: departureTime, endDate: arrivalTime))
+        }
+        
+        entries.append(createTripEntry(state: .landing, effectiveDate: arrivalTime.addingTimeInterval(-10), endDate: arrivalTime))
+        entries.append(createTripEntry(state: .landed, effectiveDate: arrivalTime.addingTimeInterval(10), endDate: arrivalTime))
+        entries.append(TripEntry(id: "finished", effectiveDate: arrivalTime.addingTimeInterval(20), trip: nil))
+        
+        return entries
+    }
 }
 
 extension Trip: AnalyticsRepresentable {
     var analytics: [String: AnalyticsValue] {
         [
-            "origin": origin ?? "N/A",
-            "destination": destination ?? "N/A"
+            "origin": origin,
+            "destination": destination
         ]
     }
 }

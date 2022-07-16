@@ -7,56 +7,56 @@
 
 import SwiftUI
 
-class SettingsViewModel: ObservableObject {
-    @Published var liveApi: Bool = false
-    
-    private var env = EnvironmentFlags()
-    
-    init() {
-    }
-    
-    func load() {
-        liveApi = env.liveApi ?? true
-    }
-    
-    func updateLiveApi(_ enabled: Bool) {
-        let current = env.liveApi
-        if current != enabled {
-            env.liveApi = enabled
-            FlightAwareAPIManager.configure(live: enabled)
-        }
-    }
-}
-
 struct SettingsView: View {
-    @ObservedObject var viewModel = SettingsViewModel()
+    @EnvironmentObject var settings: EnvironmentSettings
     
     var body: some View {
-        NavigationView {
-            HStack {
-                Text("")
-                .navigationTitle("Settings")
-                .trackView("SettingsView")
-                .navigationBarTitleDisplayMode(.inline)
-                VStack {
-                    HStack {
+        HStack {
+            VStack {
+                Text("Settings")
+                    .font(.title)
+                    .trackView("SettingsView")
+                AdaptiveStack {
 #if DEBUG
-                        Toggle("Live API", isOn: $viewModel.liveApi).onChange(of: viewModel.liveApi) { value in
-                            viewModel.updateLiveApi(value)
+                    VStack {
+                        Section(header: HStack {
+                            Text("Data:").bold()
+                            Spacer() }
+                        ) {
+                            Toggle("Live API", isOn: $settings.liveApi).onChange(of: settings.liveApi) { value in
+                                settings.updateLiveApi(value)
+                            }
+                            Toggle("Change Gates", isOn: $settings.gateChange).onChange(of: settings.gateChange) { value in
+                                settings.updateGateChange(value)
+                            }
+                            Button("Clear User Defaults") {
+                                settings.clearUserDefaults()
+                            }
+                         }
+                    }.padding()
+                    VStack {
+                        Section(header: HStack {
+                            Text("Features:").bold()
+                            Spacer() }
+                        ) {
+                            Toggle("Feature A", isOn: $settings.shareData)
+                            Toggle("Feature B", isOn: $settings.shareData)
+                            Toggle("Feature C", isOn: $settings.shareData)
                         }
+                    }.padding()
 #else
-                        Text("Production settings here")
+                    Text("Production settings here")
 #endif
-                    }
-                    Spacer()
-                }.onAppear {
-                    viewModel.load()
                 }
                 Spacer()
-            }
-            .padding(.all, 10)
+            }.onAppear {
+                settings.load()
+            } 
+            Spacer()
         }
+        .padding(.all, 10)
     }
+    
 }
 
 #if DEBUG

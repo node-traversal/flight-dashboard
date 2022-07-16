@@ -27,7 +27,11 @@ struct LoadingView<Content: View>: View {
                     }
                 }
             case .loading:
-                ProgressView()
+                VStack {
+                    Spacer()
+                    ProgressView().scaleEffect(x: 4, y: 4, anchor: .center)
+                    Spacer()
+                }
             case .loaded:
                 if showList {
                     List {
